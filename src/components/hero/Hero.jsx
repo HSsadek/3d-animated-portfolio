@@ -1,9 +1,9 @@
 import './hero.css';
-import { motion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import Speech from './Speech';
 import Shape from './Shape';
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { Suspense, useRef } from 'react';
 
 const awardVariants = {
   initial: {
@@ -15,7 +15,7 @@ const awardVariants = {
     opacity: 1,
     transition: {
       duration: 1,
-      staggerChildren: 0.2,
+      staggerChildren: 0.1, // çocuklar arası gecikme
     },
   },
 };
@@ -30,19 +30,23 @@ const followVariants = {
     opacity: 1,
     transition: {
       duration: 1,
-      staggerChildren: 0.2,
+      staggerChildren: 0.1, // çocuklar arası gecikme
     },
   },
 };
 const Hero = () => {
+  const ref = useRef();
+  const isInView = useInView(ref, { margin: '-100px' });
   return (
-    <div className="hero">
+    <div ref={ref} className="hero">
       <div className="hSection left">
         {/* title */}
         <motion.h1
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1 }}
+          animate={
+            isInView
+              ? { y: 0, opacity: 1, transition: { duration: 1 } }
+              : { y: -100, opacity: 0 }
+          }
           className="hTitle"
         >
           Hey There, <br />
@@ -51,8 +55,7 @@ const Hero = () => {
         {/* awards */}
         <motion.div
           variants={awardVariants}
-          initial="initial"
-          animate="animate"
+          animate={isInView ? 'animate' : 'initial'}
           className="aWards"
         >
           <motion.h2 variants={awardVariants}>Top Reated Desaginer</motion.h2>
@@ -85,30 +88,26 @@ const Hero = () => {
         {/* Follow */}
         <motion.div
           variants={followVariants}
-          initial="initial"
-          animate="animate"
+          animate={isInView ? 'animate' : 'initial'}
           className="follow"
         >
           <motion.a
             variants={followVariants}
-            initial="initial"
-            animate="animate"
+            animate={isInView ? 'animate' : 'initial'}
             href=""
           >
             <img src="/instagram.png" alt="" />
           </motion.a>
           <motion.a
             variants={followVariants}
-            initial="initial"
-            animate="animate"
+            animate={isInView ? 'animate' : 'initial'}
             href=""
           >
             <img src="/facebook.png" alt="" />
           </motion.a>
           <motion.a
             variants={followVariants}
-            initial="initial"
-            animate="animate"
+            animate={isInView ? 'animate' : 'initial'}
             href=""
           >
             <img src="/youtube.png" alt="" />
@@ -125,8 +124,7 @@ const Hero = () => {
           >
             <motion.div
               variants={followVariants}
-              initial="initial"
-              animate="animate"
+              animate={isInView ? 'animate' : 'initial'}
               className="followText"
             >
               FOLLOW ME
